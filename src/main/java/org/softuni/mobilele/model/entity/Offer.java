@@ -51,8 +51,8 @@ public class Offer extends BaseEntity{
     @ManyToOne
     private Model model;
 
-    @ManyToOne
-    private User seller;
+    //@ManyToOne
+    //private User seller;
 
     public String getDescription() {
         return description;
@@ -144,14 +144,14 @@ public class Offer extends BaseEntity{
         return this;
     }
 
-    public User getSeller() {
-        return seller;
-    }
+//    public User getSeller() {
+//        return seller;
+//    }
 
-    public Offer setSeller(User seller) {
-        this.seller = seller;
-        return this;
-    }
+//    public Offer setSeller(User seller) {
+//        this.seller = seller;
+//        return this;
+//    }
 
     public UUID getUuid() {
         return uuid;

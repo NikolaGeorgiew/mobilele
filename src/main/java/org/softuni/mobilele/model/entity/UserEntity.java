@@ -3,10 +3,12 @@ package org.softuni.mobilele.model.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity{
+public class UserEntity extends BaseEntity{
 
     @Column(unique = true)
     private String email;
@@ -26,8 +28,13 @@ public class User extends BaseEntity{
     @Column
     private String username;
 
-    @OneToOne
-    private UserRole role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<UserRole> roles = new ArrayList<>();
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -42,7 +49,7 @@ public class User extends BaseEntity{
         return email;
     }
 
-    public User setEmail(String email) {
+    public UserEntity setEmail(String email) {
         this.email = email;
         return this;
     }
@@ -51,7 +58,7 @@ public class User extends BaseEntity{
         return password;
     }
 
-    public User setPassword(String password) {
+    public UserEntity setPassword(String password) {
         this.password = password;
         return this;
     }
@@ -60,7 +67,7 @@ public class User extends BaseEntity{
         return firstName;
     }
 
-    public User setFirstName(String firstName) {
+    public UserEntity setFirstName(String firstName) {
         this.firstName = firstName;
         return this;
     }
@@ -69,7 +76,7 @@ public class User extends BaseEntity{
         return lastName;
     }
 
-    public User setLastName(String lastName) {
+    public UserEntity setLastName(String lastName) {
         this.lastName = lastName;
         return this;
     }
@@ -78,7 +85,7 @@ public class User extends BaseEntity{
         return active;
     }
 
-    public User setActive(boolean active) {
+    public UserEntity setActive(boolean active) {
         this.active = active;
         return this;
     }
@@ -87,17 +94,8 @@ public class User extends BaseEntity{
         return username;
     }
 
-    public User setUsername(String username) {
+    public UserEntity setUsername(String username) {
         this.username = username;
-        return this;
-    }
-
-    public UserRole getRole() {
-        return role;
-    }
-
-    public User setRole(UserRole role) {
-        this.role = role;
         return this;
     }
 
@@ -105,7 +103,7 @@ public class User extends BaseEntity{
         return imageUrl;
     }
 
-    public User setImageUrl(String imageUrl) {
+    public UserEntity setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
         return this;
     }
@@ -114,7 +112,7 @@ public class User extends BaseEntity{
         return created;
     }
 
-    public User setCreated(LocalDateTime created) {
+    public UserEntity setCreated(LocalDateTime created) {
         this.created = created;
         return this;
     }
@@ -123,8 +121,17 @@ public class User extends BaseEntity{
         return modified;
     }
 
-    public User setModified(LocalDateTime modified) {
+    public UserEntity setModified(LocalDateTime modified) {
         this.modified = modified;
+        return this;
+    }
+
+    public List<UserRole> getRoles() {
+        return roles;
+    }
+
+    public UserEntity setRoles(List<UserRole> roles) {
+        this.roles = roles;
         return this;
     }
 }

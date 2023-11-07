@@ -17,4 +17,23 @@ spring:
       filter:
         enabled: true
 
-default.admin.pass: ${DEFAULT_ADMIN_PASS:12345}
+mobilele:
+  default.admin.pass: ${DEFAULT_ADMIN_PASS:12345}
+  remember.me.key: ${REMEMBER_ME_KEY:12345}
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+
+
+
+open.exchange.rates:
+  schema: https
+  host: openexchangerates.org
+  path: /api/latest.json
+  app_id: ${APP_ID:test}
+  symbols: EUR,BGN
+  enabled: false
+
+

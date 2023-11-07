@@ -9,7 +9,7 @@ public class DbInit implements CommandLineRunner {
 
     private final String defaultAdminPass;
 
-    public DbInit(@Value("${default.admin.pass}") String defaultAdminPass){
+    public DbInit(@Value("${mobilele.default.admin.pass}") String defaultAdminPass){
 
         this.defaultAdminPass = defaultAdminPass;
     }
