@@ -26,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendRegistrationEmail(String userEmail, String username) {
+    public void sendRegistrationEmail(String userEmail, String username, String activationCode) {
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
@@ -37,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
             mimeMessageHelper.setFrom(mobileleEmail);
             mimeMessageHelper.setReplyTo(mobileleEmail);
             mimeMessageHelper.setSubject("Welcome to mobilele!");
-            mimeMessageHelper.setText(generateRegistrationEmailBody(username), true);
+            mimeMessageHelper.setText(generateRegistrationEmailBody(username,activationCode), true);
 
             javaMailSender.send(mimeMessageHelper.getMimeMessage());
 
@@ -45,10 +45,12 @@ public class EmailServiceImpl implements EmailService {
             throw new RuntimeException(e);
         }
     }
-    private String generateRegistrationEmailBody(String username) {
+    private String generateRegistrationEmailBody(String username, String activationCode) {
         Context context = new Context();
         context.setVariable("username", username);
+        context.setVariable("activation_code", activationCode);
 
         return templateEngine.process("email/registration-email", context);
     }
+
 }
