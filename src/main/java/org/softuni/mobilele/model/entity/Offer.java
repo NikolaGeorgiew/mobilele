@@ -2,6 +2,7 @@ package org.softuni.mobilele.model.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.softuni.mobilele.model.enums.EngineEnum;
 import org.softuni.mobilele.model.enums.TransmissionEnum;
@@ -18,7 +19,8 @@ public class Offer extends BaseEntity{
     @JdbcTypeCode(Types.VARCHAR)
     private UUID uuid;
 
-    @Column(columnDefinition = "TEXT")
+    @Column
+    @NotEmpty
     private String description;
 
     @Column

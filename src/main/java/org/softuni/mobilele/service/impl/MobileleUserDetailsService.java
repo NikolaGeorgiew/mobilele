@@ -21,21 +21,24 @@ public class MobileleUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-         return userRepository
+        UserDetails userDetails = userRepository
                 .findByEmail(email)
                 .map(MobileleUserDetailsService::map)
                 .orElseThrow(() -> new UsernameNotFoundException("User " + email + " not found!"));
+        return userDetails;
 
 
     }
     private static UserDetails map(UserEntity userEntity) {
-         return User
+        UserDetails build = User
                 .withUsername(userEntity.getEmail())
                 .password(userEntity.getPassword())
                 .authorities(userEntity.getRoles().stream().map(MobileleUserDetailsService::map).toList())
                 .build();
+        return build;
     }
     private static GrantedAuthority map(UserRole userRole) {
-        return new SimpleGrantedAuthority("ROLE_" + userRole.getRole().name());
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_" + userRole.getRole().name());
+        return simpleGrantedAuthority;
     }
 }

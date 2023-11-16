@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(UserRegistrationDTO userRegistrationDTO) {
 
+
         userRepository.save(map(userRegistrationDTO));
 
         applicationEventPublisher.publishEvent(new UserRegisteredEvent(

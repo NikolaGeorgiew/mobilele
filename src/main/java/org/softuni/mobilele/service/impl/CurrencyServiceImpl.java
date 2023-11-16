@@ -2,10 +2,13 @@ package org.softuni.mobilele.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.softuni.mobilele.model.dto.ConvertRequestDTO;
 import org.softuni.mobilele.model.dto.ExchangeRatesDTO;
+import org.softuni.mobilele.model.dto.MoneyDTO;
 import org.softuni.mobilele.model.entity.ExchangeRate;
 import org.softuni.mobilele.repository.ExchangeRateRepository;
 import org.softuni.mobilele.service.CurrencyService;
+import org.softuni.mobilele.service.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -43,6 +46,16 @@ public class CurrencyServiceImpl implements CurrencyService {
         }
         LOGGER.info("Rates refreshed...");
     }
+
+    @Override
+    public MoneyDTO convert(ConvertRequestDTO convertRequestDTO) {
+        ExchangeRate exchangeRate = exchangeRateRepository
+                .findById(convertRequestDTO.target())
+                .orElseThrow(() -> new ObjectNotFoundException("Convertion to target + " + convertRequestDTO.target() + " not possible!"));
+
+        return new MoneyDTO(convertRequestDTO.target(), exchangeRate.getRate().multiply(convertRequestDTO.amount()));
+    }
+
     private static Optional<BigDecimal> getExchangeRate(ExchangeRatesDTO exchangeRatesDTO, String from,String to) {
 
         Objects.requireNonNull(from,"From currency cannot be null");
