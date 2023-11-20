@@ -40,6 +40,9 @@ public class Offer extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private TransmissionEnum transmission;
 
+    @ManyToOne
+    private UserEntity seller;
+
     @Column
     private Integer year;
 
@@ -146,14 +149,14 @@ public class Offer extends BaseEntity{
         return this;
     }
 
-//    public User getSeller() {
-//        return seller;
-//    }
+    public UserEntity getSeller() {
+        return seller;
+    }
 
-//    public Offer setSeller(User seller) {
-//        this.seller = seller;
-//        return this;
-//    }
+    public Offer setSeller(UserEntity seller) {
+        this.seller = seller;
+        return this;
+    }
 
     public UUID getUuid() {
         return uuid;
