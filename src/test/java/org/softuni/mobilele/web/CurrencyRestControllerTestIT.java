@@ -1,7 +1,7 @@
 package org.softuni.mobilele.web;
 
 import org.junit.jupiter.api.Test;
-import org.softuni.mobilele.testutils.TestData;
+import org.softuni.mobilele.testutils.TestDataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +21,7 @@ class CurrencyRestControllerTestIT {
     private MockMvc mockMvc;
 
     @Autowired
-    private TestData testData;
+    private TestDataUtil testData;
 
     @Test
     public void testConvert() throws Exception {
