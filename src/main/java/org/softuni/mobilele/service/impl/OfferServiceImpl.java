@@ -4,9 +4,8 @@ import jakarta.transaction.Transactional;
 import org.softuni.mobilele.model.dto.CreateOfferDTO;
 import org.softuni.mobilele.model.dto.OfferDetailDTO;
 import org.softuni.mobilele.model.dto.OfferSummaryDTO;
-import org.softuni.mobilele.model.entity.Model;
-import org.softuni.mobilele.model.entity.Offer;
-import org.softuni.mobilele.model.entity.UserEntity;
+import org.softuni.mobilele.model.entity.*;
+import org.softuni.mobilele.model.enums.UserRoleEnum;
 import org.softuni.mobilele.repository.ModelRepository;
 import org.softuni.mobilele.repository.OfferRepository;
 import org.softuni.mobilele.repository.UserRepository;
@@ -19,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,10 +71,10 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public Optional<OfferDetailDTO> getOfferDetail(UUID offerUUID) {
+    public Optional<OfferDetailDTO> getOfferDetail(UUID offerUUID, UserDetails viewer) {
         return offerRepository
                 .findByUuid(offerUUID)
-                .map(OfferServiceImpl::mapAsDetails);
+                .map(o -> this.mapAsDetails(o, viewer));
     }
 
     @Override
@@ -83,7 +83,7 @@ public class OfferServiceImpl implements OfferService {
         offerRepository.deleteByUuid(offerUUID);
     }
 
-    private static OfferDetailDTO mapAsDetails(Offer offer) {
+    private OfferDetailDTO mapAsDetails(Offer offer, UserDetails viewer) {
         //TODO reuse
         return new OfferDetailDTO(
                 offer.getUuid().toString(),
@@ -94,8 +94,31 @@ public class OfferServiceImpl implements OfferService {
                 offer.getPrice(),
                 offer.getEngine(),
                 offer.getTransmission(),
-                offer.getImageUrl()
+                offer.getImageUrl(),
+                offer.getSeller().getFirstName(),
+                isOwner(offer,viewer)
         );
+    }
+    private boolean isOwner(Offer offer, UserDetails viewer) {
+        if (viewer == null) {
+            //anonymous user own no offers
+            return false;
+        }
+        UserEntity viewerEntity = userRepository
+                .findByEmail(viewer.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("Unknown user..."));
+        if (isAdmin(viewerEntity)) {
+            //all admin own all offers
+            return true;
+        }
+        return Objects.equals(offer.getSeller().getId(), viewerEntity.getId());
+    }
+    private boolean isAdmin(UserEntity userEntity) {
+        return userEntity
+                .getRoles()
+                .stream()
+                .map(UserRole::getRole)
+                .anyMatch(r -> UserRoleEnum.ADMIN == r);
     }
 
     private static OfferSummaryDTO mapAsSummary(Offer offer) {
