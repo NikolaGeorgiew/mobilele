@@ -83,6 +83,11 @@ public class OfferServiceImpl implements OfferService {
         offerRepository.deleteByUuid(offerUUID);
     }
 
+    @Override
+    public boolean isOwner(UUID uuid, String userName) {
+        return isOwner(offerRepository.findByUuid(uuid).orElse(null),userName);
+    }
+
     private OfferDetailDTO mapAsDetails(Offer offer, UserDetails viewer) {
         //TODO reuse
         return new OfferDetailDTO(
@@ -96,16 +101,17 @@ public class OfferServiceImpl implements OfferService {
                 offer.getTransmission(),
                 offer.getImageUrl(),
                 offer.getSeller().getFirstName(),
-                isOwner(offer,viewer)
+                isOwner(offer,viewer != null ? viewer.getUsername() : null)
         );
     }
-    private boolean isOwner(Offer offer, UserDetails viewer) {
-        if (viewer == null) {
+    private boolean isOwner(Offer offer, String userName) {
+        if (offer == null ||userName == null) {
             //anonymous user own no offers
+            //missing offers are meaningless
             return false;
         }
         UserEntity viewerEntity = userRepository
-                .findByEmail(viewer.getUsername())
+                .findByEmail(userName)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown user..."));
         if (isAdmin(viewerEntity)) {
             //all admin own all offers
