@@ -20,6 +20,7 @@ public class Brand extends BaseEntity{
 
     @OneToMany(
             fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
             mappedBy = "brand"
     )
     private List<Model> models;
