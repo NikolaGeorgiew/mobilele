@@ -51,9 +51,14 @@ public class CurrencyServiceImpl implements CurrencyService {
     public MoneyDTO convert(ConvertRequestDTO convertRequestDTO) {
         ExchangeRate exchangeRate = exchangeRateRepository
                 .findById(convertRequestDTO.target())
-                .orElseThrow(() -> new ObjectNotFoundException("Convertion to target + " + convertRequestDTO.target() + " not possible!"));
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "Convertion to target " +
+                                convertRequestDTO.target() + " not possible!"));
 
-        return new MoneyDTO(convertRequestDTO.target(), exchangeRate.getRate().multiply(convertRequestDTO.amount()));
+        return new MoneyDTO(
+                convertRequestDTO.target(),
+                exchangeRate.getRate().multiply(convertRequestDTO.amount())
+        );
     }
 
     private static Optional<BigDecimal> getExchangeRate(ExchangeRatesDTO exchangeRatesDTO, String from,String to) {

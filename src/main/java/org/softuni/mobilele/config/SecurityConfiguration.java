@@ -43,6 +43,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/offer/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/brands").hasRole(UserRoleEnum.ADMIN.name())
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         //all other requests are authenticated.
                         .anyRequest().authenticated()
         ).formLogin(
