@@ -6,6 +6,11 @@ import org.softuni.mobilele.model.events.UserRegisteredEvent;
 import org.softuni.mobilele.repository.UserRepository;
 import org.softuni.mobilele.service.UserService;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +18,16 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final UserDetailsService userDetailsService;
 
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ApplicationEventPublisher applicationEventPublisher) {
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ApplicationEventPublisher applicationEventPublisher, UserDetailsService userDetailsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -36,6 +43,22 @@ public class UserServiceImpl implements UserService {
         ));
     }
 
+    @Override
+    public void createUserIfNotExist(String email, String names) {
+
+    }
+
+    @Override
+    public Authentication login(String email) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                userDetails.getPassword(),
+                userDetails.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        return auth;
+    }
 
 
     private UserEntity map(UserRegistrationDTO userRegistrationDTO) {
